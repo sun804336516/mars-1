@@ -164,7 +164,7 @@ jvalue __JNU_CallMethodByName(JNIEnv* env, jobject obj, const char* name, const 
         ASSERT(clazz != NULL);
 
         mid = cacheInastance->GetMethodId(env, clazz, name, descriptor);
-
+        xinfo2(TSF "WakerLockDebug GetMethodId: %_, descriptor: %_", mid, descriptor);
         ASSERT(mid != NULL);
 
         if (mid) {

@@ -625,7 +625,7 @@ void wakeupLock_Lock(void* _object) {
 }
 
 void wakeupLock_Lock_Timeout(void* _object, int64_t _timeout) {
-    xverbose_function();
+    xinfo_function();
     xassert2(_object);
     xassert2(0 < _timeout);
     xverbose2(TSF "_object= %0, _timeout= %1", _object, _timeout);
@@ -635,11 +635,16 @@ void wakeupLock_Lock_Timeout(void* _object, int64_t _timeout) {
 
     if (coroutine::isCoroutine())
         return coroutine::MessageInvoke(boost::bind(&wakeupLock_Lock_Timeout, _object, _timeout));
-
+    uint64_t start_getenv = ::gettickcount();
     VarCache* cacheInstance = VarCache::Singleton();
     ScopeJEnv scopeJEnv(cacheInstance->GetJvm());
     JNIEnv* env = scopeJEnv.GetEnv();
+    uint64_t end_getenv = ::gettickcount();
     JNU_CallMethodByName(env, (jobject)_object, "lock", "(J)V", (jlong)_timeout);
+    uint64_t end_call = ::gettickcount();
+    xinfo2(TSF "WakerLockDebug Call, timeout: %_, get_env: %_, call cost: %_",
+           end_getenv - start_getenv,
+           end_call - end_getenv);
 }
 
 void wakeupLock_Unlock(void* _object) {

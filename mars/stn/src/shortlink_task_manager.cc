@@ -164,6 +164,7 @@ unsigned int ShortLinkTaskManager::GetTasksContinuousFailCount() {
 }
 
 void ShortLinkTaskManager::__RunLoop() {
+    xinfo_function();
     if (lst_cmd_.empty()) {
 #ifdef ANDROID
         /*cancel the last wakeuplock*/
@@ -180,7 +181,7 @@ void ShortLinkTaskManager::__RunLoop() {
 
     __RunOnTimeout();
     __RunOnStartTask();
-
+    xinfo2(TSF "WakerLockDebug Start GetLock");
     if (!lst_cmd_.empty()) {
 #ifdef ANDROID
         if (context_->GetManager<AppManager>() != nullptr) {
